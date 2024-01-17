@@ -1,10 +1,12 @@
 package main;
 
+import java.awt.*;
+
 public class RigidBody {
     public Vector2 Position = new Vector2(0, 0);
     public Vector2 Velocity = new Vector2(0, 0);
     public Vector2 Force = new Vector2(0, 0);
-    public static double Gravity = 0f;
+    public static double Gravity = 9.8f * 0;
     private final double mass;
     private final double friction;
     BoxCollider collider;
@@ -25,7 +27,18 @@ public class RigidBody {
         Force = new Vector2(0, 0);
 
         for (BoxCollider other : BoxCollider.AllColliders) {
-            Vector2 resolve = other.collisionResolution(other);
+
+            Vector2 resolveDir = collider.collisionResolution(other).multiply(0.5);
+            Position = Position.add(resolveDir);
+
+            if (resolveDir.X != 0) {
+                Velocity.X = 0;
+            }
+
+            if (resolveDir.Y != 0) {
+                Velocity.Y = 0;
+            }
+
         }
     }
 }

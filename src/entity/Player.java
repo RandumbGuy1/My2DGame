@@ -68,10 +68,10 @@ public class Player extends Entity {
 
         Vector2 inputDir = keyHandler.getDirectionalInput().normalize();
         Move(inputDir, deltaTime);
+
         rb.update(deltaTime);
 
         collider.Position = Position;
-        collider.update(deltaTime);
 
         if (inputDir.getSqrLength() == 0) return;
 

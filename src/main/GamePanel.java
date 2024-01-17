@@ -19,11 +19,8 @@ public class GamePanel extends JPanel implements Runnable {
     int fps = 60;
     Thread gameThread;
     KeyHandler keyHandler = new KeyHandler();
-
     TileManager tileManager = new TileManager(this);
     Player player = new Player(this, keyHandler);
-
-    public BoxCollider floor = new BoxCollider(new Vector2(0, TileSize * (MaxScreenRow - 1)), new Vector2(TileSize * MaxScreenCol, TileSize));
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
@@ -69,8 +66,6 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         tileManager.draw(g2);
         player.draw(g2);
-        floor.draw(g2);
-
         g2.dispose();
     }
 }

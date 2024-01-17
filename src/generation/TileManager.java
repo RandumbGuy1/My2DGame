@@ -1,6 +1,8 @@
 package generation;
 
+import main.BoxCollider;
 import main.GamePanel;
+import main.Vector2;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -51,6 +53,10 @@ public class TileManager {
                     String[] numbers = line.split(" ");
                     int num = Integer.parseInt((numbers[col]));
                     mapTileNumbers[col][row] = num;
+                    if(num == 0) {
+                        BoxCollider collider = new BoxCollider(new Vector2(col * gamePanel.TileSize, row * gamePanel.TileSize),
+                                new Vector2(gamePanel.TileSize, gamePanel.TileSize));
+                    }
                     col++;
                 }
 

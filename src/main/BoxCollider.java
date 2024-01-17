@@ -18,16 +18,45 @@ public class BoxCollider extends Entity {
     }
 
     public Vector2 collisionResolution(BoxCollider other) {
-        boolean horizontalIntersection = Position.X < other.Position.X + other.Scale.X && Position.X + Scale.X > other.Position.X;
+        if (other == this) return new Vector2(0, 0);
+
         boolean verticalIntersection = Position.Y < other.Position.Y + other.Scale.Y && Position.Y + Scale.Y > other.Position.Y;
+        boolean horizontalIntersection = Position.X + Scale.X > other.Position.X && Position.X < other.Position.X + other.Scale.X;
 
-        if (!horizontalIntersection || !verticalIntersection) {
-            System.out.println("Not Intersecting");
-            return new Vector2(0, 0);
+        if (!horizontalIntersection || !verticalIntersection) return new Vector2(0, 0);
+
+        double upIntersection = -Position.Y + (other.Position.Y + other.Scale.Y);
+        double downIntersection = other.Position.Y - (Position.Y + Scale.Y);
+
+        double rightIntersection = other.Position.X - (Position.X + Scale.X);
+        double leftIntersection = -Position.X + (other.Position.X + other.Scale.X);
+
+        double[] intersections = { upIntersection, downIntersection, rightIntersection, leftIntersection };
+        int smallestIntersection = indexOfSmallestAbs(intersections);
+
+        return switch (smallestIntersection) {
+            case 0 -> new Vector2(0, upIntersection);
+            case 1 -> new Vector2(0, downIntersection);
+            case 2 -> new Vector2(rightIntersection, 0);
+            case 3 -> new Vector2(leftIntersection, 0);
+            default -> new Vector2(0, 0);
+        };
+    }
+
+    public static int indexOfSmallestAbs(double[] array) {
+        if (array.length == 0)
+            return -1;
+
+        int index = 0;
+        double min = Math.abs(array[index]);
+
+        for (int i = 1; i < array.length; i++){
+            if (Math.abs(array[i]) <= min){
+                min = Math.abs(array[i]);
+                index = i;
+            }
         }
-
-        System.out.println("Intersecting");
-        return new Vector2(0, 0);
+        return index;
     }
 
     @Override
