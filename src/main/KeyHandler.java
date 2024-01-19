@@ -8,7 +8,8 @@ public class KeyHandler implements KeyListener {
     public final Vector2 WAInput = new Vector2(0, 0);
     public final Vector2 SDInput = new Vector2(0, 0);
 
-    public boolean jumping = false;
+    public boolean pressingSpace = false;
+    public boolean Jumping = false;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -24,7 +25,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_A) WAInput.X = 1;
         if (code == KeyEvent.VK_D) SDInput.X = -1;
 
-        if (code == KeyEvent.VK_SPACE) jumping = true;
+        if (code == KeyEvent.VK_SPACE) {
+            Jumping = !pressingSpace;
+
+            pressingSpace = true;
+        }
     }
 
     @Override
@@ -36,7 +41,10 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_A) WAInput.X = 0;
         if (code == KeyEvent.VK_D) SDInput.X = 0;
 
-        if (code == KeyEvent.VK_SPACE) jumping = false;
+        if (code == KeyEvent.VK_SPACE) {
+            pressingSpace = false;
+            Jumping = false;
+        }
     }
 
     public Vector2 getDirectionalInput() {

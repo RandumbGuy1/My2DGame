@@ -2,12 +2,12 @@ package main;
 
 import entity.Entity;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class BoxCollider extends Entity {
     public Vector2 Scale;
+    public RigidBody Rb;
     public static ArrayList<BoxCollider> AllColliders = new ArrayList<>();
 
     public BoxCollider(Vector2 position, Vector2 scale) {
@@ -15,6 +15,10 @@ public class BoxCollider extends Entity {
         Scale = scale;
 
         AllColliders.add(this);
+    }
+
+    public void SetDynamic(RigidBody rb) {
+        Rb = rb;
     }
 
     public Vector2 collisionResolution(BoxCollider other) {
@@ -60,7 +64,7 @@ public class BoxCollider extends Entity {
     }
 
     @Override
-    public void draw(Graphics2D graphics2D) {
-        graphics2D.drawRect((int) Position.X, (int) Position.Y, (int) Scale.X, (int) Scale.Y);
+    public void draw(Graphics2D graphics2D, Vector2 offset) {
+        graphics2D.drawRect((int) Position.X - (int) offset.X, (int) Position.Y - (int) offset.Y, (int) Scale.X, (int) Scale.Y);
     }
 }

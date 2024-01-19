@@ -45,33 +45,28 @@ public class Player extends Entity {
             e.printStackTrace();
         }
 
-        collider = new BoxCollider(new Vector2(0, 0), new Vector2(gamePanel.TileSize, gamePanel.TileSize));
-        rb = new RigidBody(1, 0.95f, collider);
+        collider = new BoxCollider(Position, new Vector2(gamePanel.TileSize, gamePanel.TileSize));
+        rb = new RigidBody(1f, 0.95f, collider);
     }
 
     double spriteCount = 0;
     int spriteIndex = 0;
     @Override
     public void update(double deltaTime) {
-        if (keyHandler.WAInput.Y > 0) {
-            FacingDirection = Direction.Up;
-        }
         if (keyHandler.WAInput.X > 0) {
             FacingDirection = Direction.Left;
-        }
-        if (keyHandler.SDInput.Y < 0) {
-            FacingDirection = Direction.Down;
         }
         if (keyHandler.SDInput.X < 0) {
             FacingDirection = Direction.Right;
         }
 
-        Vector2 inputDir = keyHandler.getDirectionalInput().normalize();
+        Vector2 inputDir = keyHandler.getDirectionalInput();
+        inputDir.Y = 0;
         Move(inputDir, deltaTime);
 
-        rb.update(deltaTime);
-
-        collider.Position = Position;
+        if (keyHandler.Jumping) {
+            rb.Velocity.Y = -300;
+        }
 
         if (inputDir.getSqrLength() == 0) return;
 
@@ -83,7 +78,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, Vector2 offset) {
         BufferedImage image = switch (FacingDirection) {
             case Up -> (spriteIndex % 2 == 0 ? Up1 : Up2);
             case Down -> (spriteIndex % 2 == 0 ? Down1 : Down2);
@@ -91,12 +86,11 @@ public class Player extends Entity {
             case Right -> (spriteIndex % 2 == 0 ? Right1 : Right2);
         };
 
-        g2.drawImage(image, (int) Position.X, (int) Position.Y, gamePanel.TileSize, gamePanel.TileSize, null);
-        collider.draw(g2);
+        g2.drawImage(image, (int) Position.X - (int) offset.X, (int) Position.Y - (int) offset.Y, gamePanel.TileSize, gamePanel.TileSize, null);
     }
 
     public void Move(Vector2 amount, double deltaTime) {
-        int speed = 1000;
+        double speed = 1000 * 1.5;
         rb.Force.X += amount.X * -speed * deltaTime;
         rb.Force.Y += amount.Y * -speed * deltaTime;
 

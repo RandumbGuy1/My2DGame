@@ -8,7 +8,7 @@ public class Entity {
     public void update(double deltaTime) {
 
     }
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, Vector2 offset) {
 
     }
 }

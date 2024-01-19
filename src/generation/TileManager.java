@@ -15,7 +15,7 @@ import java.util.Objects;
 public class TileManager {
     GamePanel gamePanel;
     Tile[] tiles;
-    int mapTileNumbers[][];
+    int[][] mapTileNumbers;
 
     public TileManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -53,10 +53,6 @@ public class TileManager {
                     String[] numbers = line.split(" ");
                     int num = Integer.parseInt((numbers[col]));
                     mapTileNumbers[col][row] = num;
-                    if(num == 0) {
-                        BoxCollider collider = new BoxCollider(new Vector2(col * gamePanel.TileSize, row * gamePanel.TileSize),
-                                new Vector2(gamePanel.TileSize, gamePanel.TileSize));
-                    }
                     col++;
                 }
 
@@ -79,14 +75,14 @@ public class TileManager {
         return padding.repeat(amount - toPad.length()) + toPad;
     }
 
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2, Vector2 offset) {
         int col = 0;
         int row = 0;
         int x = 0;
         int y = 0;
 
-        while (col < gamePanel.MaxScreenCol && row < gamePanel.MaxScreenRow) {
-            g2.drawImage(tiles[mapTileNumbers[col][row]].Image, x, y, gamePanel.TileSize, gamePanel.TileSize, null);
+        while (row < gamePanel.MaxScreenRow) {
+            g2.drawImage(tiles[mapTileNumbers[col][row]].Image, x - (int) offset.X, y - (int) offset.Y, gamePanel.TileSize, gamePanel.TileSize, null);
             col++;
             x += gamePanel.TileSize;
 
