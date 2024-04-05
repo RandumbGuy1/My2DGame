@@ -8,7 +8,12 @@ import main.Vector2;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.util.Objects;
 
@@ -17,9 +22,9 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 
 public class PasswordChest extends Item {
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
     private boolean opened = false;
-    private double cooldownTime = 0;
+    private double coolDownTime = 0;
     private String generatedPassword = "";
     private BufferedImage openImage;
     public PasswordChest(BoxCollider collider, GamePanel gamePanel) {
@@ -37,9 +42,9 @@ public class PasswordChest extends Item {
     @Override
     public void draw(Graphics2D g2, Vector2 offset) {
         Position = Collider.Position;
-        cooldownTime--;
+        coolDownTime--;
 
-        if (cooldownTime < 0 && opened) {
+        if (coolDownTime < 0 && opened) {
             opened = false;
             gamePanel.playSFX("MC Chest Close.wav");
         }
@@ -62,8 +67,12 @@ public class PasswordChest extends Item {
     public void UseItem(Player player) {
         gamePanel.playSFX("MC Chest Open.wav");
         opened = true;
-        cooldownTime = 30;
+        coolDownTime = 30;
         generatedPassword = generatePassword(10);
+
+        try {
+            Files.write(Paths.get("res/saved_password.txt"), (generatedPassword + "\n").getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) { System.out.println("Password writer exception");}
 
         StringSelection stringSelection = new StringSelection(generatedPassword);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
