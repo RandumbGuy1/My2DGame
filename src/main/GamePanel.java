@@ -1,11 +1,13 @@
 package main;
+import entity.Entity;
 import entity.Player;
-import generation.Tile;
 import generation.TileManager;
+import items.Item;
+import items.PasswordChest;
+import items.PasswordTent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16;
@@ -17,12 +19,17 @@ public class GamePanel extends JPanel implements Runnable {
     public final int ScreenWidth = TileSize * MaxScreenCol;
     public final int ScreenHeight = TileSize * MaxScreenRow;
 
+    public final int MaxWorldCol = 96;
+    public final int MaxWorldRow = 74;
+
     int fps = 60;
     Thread gameThread;
     KeyHandler keyHandler = new KeyHandler();
     MouseHandler mouseHandler = new MouseHandler(this);
     TileManager tileManager = new TileManager(this);
     Player player = new Player(this, keyHandler);
+    Audio audio = new Audio();
+    UI ui = new UI(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
@@ -37,8 +44,9 @@ public class GamePanel extends JPanel implements Runnable {
             new RigidBody(1f, 0.98f, bc);
         }
 
-        //Spawn Floor
-        new BoxCollider(new Vector2(0, TileSize * (MaxScreenRow - 1)), new Vector2(TileSize * MaxScreenCol, TileSize));
+        new RigidBody(1f, 0.98f, chest.Collider);
+
+        playMusic("Tentakeel Outpost.wav");
     }
 
     public void startGameThread() {
@@ -47,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     BoxCollider[] boxesCollider = {
-            new BoxCollider(new Vector2(TileSize * MaxScreenCol * 0.5, TileSize * MaxScreenRow * 0.5), new Vector2(TileSize, TileSize)),
+            new BoxCollider(new Vector2(TileSize * MaxScreenCol * 0.4, TileSize * MaxScreenRow * 0.4), new Vector2(TileSize, TileSize), tileManager.Tiles[3].Image, false),
     };
 
     @Override
@@ -86,21 +94,46 @@ public class GamePanel extends JPanel implements Runnable {
                 if (other.Rb != null) other.Rb.Velocity = other.Rb.Velocity.add(resolveDir.multiply(-1));
             }
         }
+
+        keyHandler.ResetTapKeys();
     }
 
     public Vector2 ScreenOffset = new Vector2(0, 0);
+    public PasswordChest chest = new PasswordChest(
+            new BoxCollider(new Vector2(TileSize * 32, TileSize * 32), new Vector2(TileSize, TileSize)), this);
+    public PasswordTent tent = new PasswordTent(
+            new BoxCollider(new Vector2(TileSize * 36, TileSize * 32), new Vector2(TileSize * 2, TileSize * 2)), this);
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
+        ScreenOffset.Y = (int) player.Position.Y - TileSize * ((double) MaxScreenRow / 2);
         ScreenOffset.X = (int) player.Position.X - TileSize * ((double) MaxScreenCol / 2);
 
         tileManager.draw(g2, ScreenOffset);
-        player.draw(g2, ScreenOffset);
 
-        for (BoxCollider other : BoxCollider.AllColliders) other.draw(g2, ScreenOffset);
+        for (Entity e : Entity.AllEntities) {
+            e.draw(g2, ScreenOffset);
+        }
+
+        ui.draw(g2);
 
         g2.dispose();
+    }
+
+    public void playMusic(String key) {
+        audio.setFile(key);
+        audio.play();
+        audio.loop();
+    }
+
+    public void playSFX(String key) {
+        audio.setFile(key);
+        audio.play();
+    }
+
+    public void stopMusic() {
+        audio.stop();
     }
 }

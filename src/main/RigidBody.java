@@ -6,7 +6,7 @@ public class RigidBody {
     public Vector2 Position;
     public Vector2 Velocity = new Vector2(0, 0);
     public Vector2 Force = new Vector2(0, 0);
-    public static double Gravity = 9.8f * 2;
+    public static double Gravity = 9.8f * 0;
     public static ArrayList<RigidBody> AllRigidBodies = new ArrayList<>();
     public final double Mass;
     public final double Friction;

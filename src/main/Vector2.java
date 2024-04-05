@@ -28,6 +28,9 @@ public class Vector2 {
     public Vector2 add(Vector2 b) {
         return new Vector2(this.X + b.X, this.Y + b.Y);
     }
+    public Vector2 subtract(Vector2 b) {
+        return new Vector2(this.X - b.X, this.Y - b.Y);
+    }
 
     public Vector2 multiply(double b) {
         return new Vector2(this.X * b, this.Y * b);

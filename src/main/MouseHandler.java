@@ -17,8 +17,8 @@ public class MouseHandler implements MouseListener {
         int x = e.getX() + (int) gamePanel.ScreenOffset.X;
         int y = e.getY() + (int) gamePanel.ScreenOffset.Y;
 
-        new RigidBody(10, 0.98,
-                new BoxCollider(new Vector2(x, y), new Vector2(gamePanel.TileSize, gamePanel.TileSize)));
+        //new RigidBody(10, 0.98,
+                //new BoxCollider(new Vector2(x, y), new Vector2(gamePanel.TileSize, gamePanel.TileSize)));
     }
 
     public void mouseEntered(MouseEvent e) {
